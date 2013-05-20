@@ -11,6 +11,7 @@ public class Test {
 		ArrayList<String> cities = Data.getCities();
 //		ArrayList<String> cities = new ArrayList<String>();
 //		cities.add("中山");
+		
 		for(int i=0;i<cities.size();i++){
 			System.out.println(cities.get(i));
 			String result = Data.callAPI("http://pm25.in/api/querys/aqi_details.json?city="+cities.get(i)+"&token=5j1znBVAsnSf5xQyNQyq");
