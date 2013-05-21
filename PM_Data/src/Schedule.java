@@ -8,8 +8,8 @@ public class Schedule {
 			System.exit(0);
 		}
 		long intervel = Integer.parseInt(args[0]) * 60 * 1000;
-		if(intervel<300000){
-			System.out.println("intervel is less than 5 minutes");
+		if(intervel<1200000){
+			System.out.println("intervel is less than 20 minutes");
 			System.exit(0);
 		}
 		Timer time = new Timer();

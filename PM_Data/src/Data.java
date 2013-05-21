@@ -25,7 +25,7 @@ public class Data extends TimerTask {
 			ArrayList<String> sqls = new ArrayList<String>();
 			String city = cities.get(i);
 			System.out.println("Getting data of city " + city + "...");
-			String url = "http://pm25.in/api/querys/aqi_details.json?city="+city+"&token=5j1znBVAsnSf5xQyNQyq";
+			String url = "http://pm25.in/api/querys/aqi_details.json?city="+city+"&token=4pUYzxZdXBZBz7deR78x";
 			String result = callAPI(url);
 			try {
 				JSONArray arr = new JSONArray(result);
@@ -99,6 +99,7 @@ public class Data extends TimerTask {
 			e.printStackTrace();
 			System.out.println("Failed to call API:  " + url);
 		}  
+		
 		return result;
 	}
 	
