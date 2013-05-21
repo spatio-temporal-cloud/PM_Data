@@ -12,8 +12,9 @@ public class Test {
 		ArrayList<String> sqls = new ArrayList<String>();
 		for(int i=0;i<cities.size();i++){
 			String cityNameCh=cities.get(i);
-			String sql = "select * from Station_Data where time_point='" + 
+			String sql = "select * from Station_Data where time_point='" + time_point+
 					"' and cityNameCh='" + cityNameCh +"'";
+			System.out.println(sql);
 			int NO2=0,SO2=0,AQI=0,PM10=0,PM2p5=0,O3=0;
 			int NO2_N=0,SO2_N=0,AQI_N=0,PM10_N=0,PM2p5_N=0,O3_N=0,CO_N=0;
 			double CO=0;
@@ -68,25 +69,31 @@ public class Test {
 					
 				}
 				if(AQI_N!=0){
-					AQI = AQI/AQI_N;
+					double tmp = (double)AQI/AQI_N;
+					AQI = (int)(tmp+0.5);
 				}
 				if(CO_N!=0){
-					CO=CO/CO_N;
+					CO = CO/CO_N;
 				}
 				if(SO2_N!=0){
-					SO2 = SO2/SO2_N;
+					double tmp = (double)SO2/SO2_N;
+					SO2 = (int)(tmp+0.5);
 				}
 				if(NO2_N!=0){
-					NO2 = NO2/NO2_N;
+					double tmp = (double)NO2/NO2_N;
+					NO2 = (int)(tmp+0.5);
 				}
 				if(O3_N!=0){
-					O3=O3/O3_N;
+					double tmp = (double)O3/O3_N;
+					O3 = (int)(tmp+0.5);
 				}
 				if(PM10_N!=0){
-					PM10=PM10/PM10_N;
+					double tmp = (double)PM10/PM10_N;
+					PM10 = (int)(tmp+0.5);
 				}
 				if(PM2p5_N!=0){
-					PM2p5_N=PM2p5/PM10_N;
+					double tmp = (double)PM2p5/PM2p5_N;
+					PM2p5 = (int)(tmp+0.5);
 				}
 				String sqlInsert = "insert into City_Data(cityNameCh,AQI,Quality,CO,SO2,NO2,O3,PM10,PM2p5,time_point) " +
 						"values('"+cityNameCh+"',"+AQI+",'"+quality+"',"+CO+","+

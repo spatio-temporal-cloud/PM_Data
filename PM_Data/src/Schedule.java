@@ -13,6 +13,6 @@ public class Schedule {
 			System.exit(0);
 		}
 		Timer time = new Timer();
-		time.schedule(new Data(), 0,intervel);
+		time.schedule(new Data2(), 0,intervel);
 	}
 }
