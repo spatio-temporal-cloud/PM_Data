@@ -1,3 +1,4 @@
+package data.pm.spatial.bigdata;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
