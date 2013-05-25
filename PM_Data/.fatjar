@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Tue May 21 19:12:33 CST 2013
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=PM_Data_fat.jar
+manifest.mergeall=true
+manifest.mainclass=Schedule
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=
+includes=
