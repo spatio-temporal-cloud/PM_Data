@@ -35,12 +35,11 @@ public class RDFCreate {
 		m.add(station,m.createProperty(uri+"#hasStationNameCh"),m.createResource(values[1],XSD.xstring));
 		
 		String [] cityInfo = getCityInfo(values[0]);
-		Resource city = m.createResource(uri+"#city_" + cityInfo[0]);
+		Resource city = m.createResource(uri+"#city_" + cityInfo[1]);
 		m.add(station,m.createProperty(uri+"#locatedCity"),city);
 		
 		m.add(city,m.createProperty(uri+"#hasCityNameCh"),m.createResource(values[0],XSD.xstring));
 		m.add(city,m.createProperty(uri+"#hasCityNameEn"),m.createResource(cityInfo[1],XSD.xstring));
-		m.add(city,m.createProperty(uri+"#hasCityCode"),m.createResource(cityInfo[0],XSD.xstring));
 		
 		Resource dateTimeInterval = m.createResource(uri + "#DateTimeIntervel_" + dataTimeFormat(values[12]));
 		m.add(measurements,m.createProperty(uri+"#hasTime"),dateTimeInterval);
@@ -92,17 +91,17 @@ public class RDFCreate {
 	}
 	
 	public static String getQualityEn(String quality){
-		if(quality=="优"){
+		if(quality.equals("优")){
 			return "excellent";
-		}else if(quality=="良"){
+		}else if(quality.equals("良")){
 			return "good";
-		}else if(quality=="轻度污染"){
+		}else if(quality.equals("轻度污染")){
 			return "light pollution";
-		}else if(quality=="中度污染"){
+		}else if(quality.equals("中度污染")){
 			return "moderate pollution";
-		}else if(quality=="重度污染"){
+		}else if(quality.equals("重度污染")){
 			return "serious pollution";
-		}else if(quality=="严重污染"){
+		}else if(quality.equals("严重污染")){
 			return "severe pollution";
 		}else{
 			return "";
