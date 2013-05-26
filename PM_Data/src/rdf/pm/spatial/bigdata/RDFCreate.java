@@ -55,9 +55,10 @@ public class RDFCreate {
 		m.add(dateTimeDescription,m.createProperty(time_uri + "#month"),m.createResource(values[12].split(" ")[0].split("-")[1],XSD.gMonth));
 		m.add(dateTimeDescription,m.createProperty(time_uri + "#day"),m.createResource(values[12].split(" ")[0].split("-")[2],XSD.gDay));
 		m.add(dateTimeDescription,m.createProperty(time_uri + "#hour"),m.createResource(values[12].split(" ")[1].split("-")[0],XSD.nonNegativeInteger));
-		Resource timeZone = m.createResource(timezone_uri+"#PST");
+		Resource timeZone = m.createResource(timezone_uri+"#Beijing");
 		
 		m.add(dateTimeDescription,m.createProperty(time_uri + "#timeZone"),timeZone);
+		m.add(timeZone,m.createProperty(timezone_uri+"#GMToffset"),m.createResource("8",XSD.duration));
 		return m;
 	}
 	
