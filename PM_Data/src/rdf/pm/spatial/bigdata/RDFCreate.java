@@ -29,9 +29,50 @@ public class RDFCreate {
 		
 		Resource station = m.createResource(uri+"#station_" + values[2]);
 		m.add(measurements,m.createProperty(uri+"#hasStation"),station);
+		m.add(station,m.createProperty(uri+"#hasStationCode"),m.createResource(values[2],XSD.xstring));
+		m.add(station,m.createProperty(uri+"#hasStationNameCh"),m.createResource(values[1],XSD.xstring));
+		
+		String [] cityInfo = getCityInfo(values[0]);
+		Resource city = m.createResource(uri+"#city_" + cityInfo[0]);
+		m.add(station,m.createProperty(uri+"#locatedCity"),city);
+		
+		m.add(city,m.createProperty(uri+"#hasCityNameCh"),m.createResource(values[0],XSD.xstring));
+		m.add(city,m.createProperty(uri+"#hasCityNameEn"),m.createResource(cityInfo[1],XSD.xstring));
+		m.add(city,m.createProperty(uri+"#hasCityCode"),m.createResource(cityInfo[0],XSD.xstring));
+		
+		Resource dataTimeInterval = m.createResource(uri + "#DateTimeIntervel_" + values[12]);
+		m.add(measurements,m.createProperty(uri+"hasTime"),dataTimeInterval);
 		return m;
 	}
 	
+	public static String dataTimeFormat(String time_point){
+		String [] tmp = time_point.split(" ");
+		String [] tmp2 = tmp[0].split("-");
+		String [] tmp3 = tmp[1].split(":");
+		return tmp2[0]+tmp2[1]+tmp2[2]+tmp3[0]+tmp3[1]+tmp3[2];
+	}
+	
+	public static String [] getCityInfo(String cityNameCh){
+		String [] cityInfo= new String[2];
+		try {
+			java.sql.Connection conn = DriverManager.getConnection(
+			    		"jdbc:mysql://10.214.0.147/pm0?useUnicode=true&characterEncoding=UTF-8", "pm", "ccntgrid");
+			java.sql.Statement stmt = conn.createStatement();
+			String sql = "select cityCode,cityNameEn from City where cityNameCh = '" + cityNameCh + "'";
+			ResultSet result = stmt.executeQuery(sql);
+			if(result.next()){
+				cityInfo[0] = result.getString("cityCode");
+				cityInfo[1] = result.getString("cityNameEn");
+			}
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Unable to read data from mysql.");
+		}
+		return cityInfo;
+	}
 	
 	public static String getQualityEn(String quality){
 		if(quality=="优"){
