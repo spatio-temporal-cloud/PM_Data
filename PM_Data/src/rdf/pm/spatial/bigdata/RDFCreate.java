@@ -11,6 +11,8 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 public class RDFCreate {
 	public static String uri="http://www.bigspatialdata.org/pm";
+	public static String time_uri = "http://www.w3.org/2006/time";
+	public static String timezone_uri = "http://www.w3.org/2006/timezone";
 	public static Model measurements(String id){
 		Model m = ModelFactory.createDefaultModel();
 		String [] values = getStationRecord(id);
@@ -40,8 +42,22 @@ public class RDFCreate {
 		m.add(city,m.createProperty(uri+"#hasCityNameEn"),m.createResource(cityInfo[1],XSD.xstring));
 		m.add(city,m.createProperty(uri+"#hasCityCode"),m.createResource(cityInfo[0],XSD.xstring));
 		
-		Resource dataTimeInterval = m.createResource(uri + "#DateTimeIntervel_" + values[12]);
-		m.add(measurements,m.createProperty(uri+"hasTime"),dataTimeInterval);
+		Resource dateTimeInterval = m.createResource(uri + "#DateTimeIntervel_" + dataTimeFormat(values[12]));
+		m.add(measurements,m.createProperty(uri+"#hasTime"),dateTimeInterval);
+		m.add(dateTimeInterval,m.createProperty(time_uri + "#xsdDateTime"),m.createResource(values[12],XSD.dateTime));
+		
+		Resource dateTimeDescription = m.createResource(uri + "#DateTimeDescription_" + dataTimeFormat(values[12]));
+		m.add(dateTimeInterval,m.createProperty(time_uri + "#hasDateTimeDescription"),dateTimeDescription);
+		
+		Resource unitHour = m.createResource(uri + "#unitHour");
+		m.add(dateTimeDescription,m.createProperty(time_uri + "#unitType"),unitHour);
+		m.add(dateTimeDescription,m.createProperty(time_uri + "#year"),m.createResource(values[12].split(" ")[0].split("-")[0],XSD.gYear));
+		m.add(dateTimeDescription,m.createProperty(time_uri + "#month"),m.createResource(values[12].split(" ")[0].split("-")[1],XSD.gMonth));
+		m.add(dateTimeDescription,m.createProperty(time_uri + "#day"),m.createResource(values[12].split(" ")[0].split("-")[2],XSD.gDay));
+		m.add(dateTimeDescription,m.createProperty(time_uri + "#hour"),m.createResource(values[12].split(" ")[1].split("-")[0],XSD.nonNegativeInteger));
+		Resource timeZone = m.createResource(timezone_uri+"#PST");
+		
+		m.add(dateTimeDescription,m.createProperty(time_uri + "#timeZone"),timeZone);
 		return m;
 	}
 	
