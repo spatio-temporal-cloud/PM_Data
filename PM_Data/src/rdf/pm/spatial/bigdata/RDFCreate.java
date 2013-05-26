@@ -3,12 +3,9 @@ package rdf.pm.spatial.bigdata;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.XSD;
 
@@ -17,20 +14,41 @@ public class RDFCreate {
 	public static Model measurements(String id){
 		Model m = ModelFactory.createDefaultModel();
 		String [] values = getStationRecord(id);
-		Map<String, Property> properties = getProperties(m);
-		Resource measurements = m.createResource(uri+"#" + id);
+		Resource measurements = m.createResource(uri+"#measurements_" + id);
 		
-		Resource AQI = m.createResource(values[3],XSD.xint);
-		m.add(measurements,properties.get("hasAQI"),AQI);
+		m.add(measurements,m.createProperty(uri+"#hasAQI"),m.createResource(values[3],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"#hasQualityCh"),m.createResource(values[4],XSD.xstring));
+		m.add(measurements,m.createProperty(uri+"#hasQualityEn"),m.createResource(getQualityEn(values[4]),XSD.xstring));
+		m.add(measurements,m.createProperty(uri+"#hasCO"),m.createResource(values[5],XSD.xdouble));
+		m.add(measurements,m.createProperty(uri+"#hasSO2"),m.createResource(values[6],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"#hasNO2"),m.createResource(values[7],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"#hasO3"),m.createResource(values[8],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"#hasPM10"),m.createResource(values[9],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"#hasPM2p5"),m.createResource(values[10],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"#hasPrimaryPollutant"),m.createResource(values[11],XSD.xstring));
 		
-		
+		Resource station = m.createResource(uri+"#station_" + values[2]);
+		m.add(measurements,m.createProperty(uri+"#hasStation"),station);
 		return m;
 	}
 	
-	public static Map<String, Property> getProperties(Model m){
-		Map<String, Property> properties = new HashMap<String, Property>();
-		properties.put("hasAQI", m.createProperty(uri+"#hasAQI"));
-		return properties;
+	
+	public static String getQualityEn(String quality){
+		if(quality=="优"){
+			return "excellent";
+		}else if(quality=="良"){
+			return "good";
+		}else if(quality=="轻度污染"){
+			return "light pollution";
+		}else if(quality=="中度污染"){
+			return "moderate pollution";
+		}else if(quality=="重度污染"){
+			return "serious pollution";
+		}else if(quality=="严重污染"){
+			return "severe pollution";
+		}else{
+			return "";
+		}
 	}
 	public static String [] getStationRecord(String id){
 		String sql = "select * from Station_Data where ID=" + id;
