@@ -3,19 +3,34 @@ package rdf.pm.spatial.bigdata;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 public class RDFCreate {
 	public static String uri="http://www.bigspatialdata.org/pm";
-	public static Resource measurements(String id){
+	public static Model measurements(String id){
 		Model m = ModelFactory.createDefaultModel();
 		String [] values = getStationRecord(id);
+		Map<String, Property> properties = getProperties(m);
 		Resource measurements = m.createResource(uri+"#" + id);
 		
-		return measurements;
+		Resource AQI = m.createResource(values[3],XSD.xint);
+		m.add(measurements,properties.get("hasAQI"),AQI);
+		
+		
+		return m;
+	}
+	
+	public static Map<String, Property> getProperties(Model m){
+		Map<String, Property> properties = new HashMap<String, Property>();
+		properties.put("hasAQI", m.createProperty(uri+"#hasAQI"));
+		return properties;
 	}
 	public static String [] getStationRecord(String id){
 		String sql = "select * from Station_Data where ID=" + id;
