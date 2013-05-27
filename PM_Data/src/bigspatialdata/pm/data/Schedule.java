@@ -1,4 +1,4 @@
-package data.pm.spatial.bigdata;
+package bigspatialdata.pm.data;
 import java.util.Timer;
 
 
