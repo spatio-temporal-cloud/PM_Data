@@ -10,54 +10,56 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.XSD;
 
 public class RDFCreate {
-	public static String uri="http://www.bigspatialdata.org/pm";
-	public static String time_uri = "http://www.w3.org/2006/time";
-	public static String timezone_uri = "http://www.w3.org/2006/timezone";
+	public static String uri="http://www.bigspatialdata.org/2013/pm#";
+	public static String time_uri = "http://www.w3.org/2006/time#";
+	public static String timezone_uri = "http://www.w3.org/2006/timezone#";
 	public static Model measurements(String id){
 		Model m = ModelFactory.createDefaultModel();
+		m.setNsPrefix("pm", uri);
+		m.setNsPrefix("time", time_uri);
+		m.setNsPrefix("timezone", timezone_uri);
 		String [] values = getStationRecord(id);
-		Resource measurements = m.createResource(uri+"#measurements_" + id);
+		Resource measurements = m.createResource(uri+"measurements_" + id);
+		m.add(measurements,m.createProperty(uri+"hasAQI"),m.createResource(values[3],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"hasQualityCh"),m.createResource(values[4],XSD.xstring));
+		m.add(measurements,m.createProperty(uri+"hasQualityEn"),m.createResource(getQualityEn(values[4]),XSD.xstring));
+		m.add(measurements,m.createProperty(uri+"hasCO"),m.createResource(values[5],XSD.xdouble));
+		m.add(measurements,m.createProperty(uri+"hasSO2"),m.createResource(values[6],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"hasNO2"),m.createResource(values[7],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"hasO3"),m.createResource(values[8],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"hasPM10"),m.createResource(values[9],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"hasPM2p5"),m.createResource(values[10],XSD.integer));
+		m.add(measurements,m.createProperty(uri+"hasPrimaryPollutant"),m.createResource(values[11],XSD.xstring));
 		
-		m.add(measurements,m.createProperty(uri+"#hasAQI"),m.createResource(values[3],XSD.integer));
-		m.add(measurements,m.createProperty(uri+"#hasQualityCh"),m.createResource(values[4],XSD.xstring));
-		m.add(measurements,m.createProperty(uri+"#hasQualityEn"),m.createResource(getQualityEn(values[4]),XSD.xstring));
-		m.add(measurements,m.createProperty(uri+"#hasCO"),m.createResource(values[5],XSD.xdouble));
-		m.add(measurements,m.createProperty(uri+"#hasSO2"),m.createResource(values[6],XSD.integer));
-		m.add(measurements,m.createProperty(uri+"#hasNO2"),m.createResource(values[7],XSD.integer));
-		m.add(measurements,m.createProperty(uri+"#hasO3"),m.createResource(values[8],XSD.integer));
-		m.add(measurements,m.createProperty(uri+"#hasPM10"),m.createResource(values[9],XSD.integer));
-		m.add(measurements,m.createProperty(uri+"#hasPM2p5"),m.createResource(values[10],XSD.integer));
-		m.add(measurements,m.createProperty(uri+"#hasPrimaryPollutant"),m.createResource(values[11],XSD.xstring));
-		
-		Resource station = m.createResource(uri+"#station_" + values[2]);
-		m.add(measurements,m.createProperty(uri+"#hasStation"),station);
-		m.add(station,m.createProperty(uri+"#hasStationCode"),m.createResource(values[2],XSD.xstring));
-		m.add(station,m.createProperty(uri+"#hasStationNameCh"),m.createResource(values[1],XSD.xstring));
+		Resource station = m.createResource(uri+"station_" + values[2]);
+		m.add(measurements,m.createProperty(uri+"hasStation"),station);
+		m.add(station,m.createProperty(uri+"hasStationCode"),m.createResource(values[2],XSD.xstring));
+		m.add(station,m.createProperty(uri+"hasStationNameCh"),m.createResource(values[1],XSD.xstring));
 		
 		String [] cityInfo = getCityInfo(values[0]);
-		Resource city = m.createResource(uri+"#city_" + cityInfo[1]);
-		m.add(station,m.createProperty(uri+"#locatedCity"),city);
+		Resource city = m.createResource(uri+"city_" + cityInfo[1]);
+		m.add(station,m.createProperty(uri+"locatedCity"),city);
 		
-		m.add(city,m.createProperty(uri+"#hasCityNameCh"),m.createResource(values[0],XSD.xstring));
-		m.add(city,m.createProperty(uri+"#hasCityNameEn"),m.createResource(cityInfo[1],XSD.xstring));
+		m.add(city,m.createProperty(uri+"hasCityNameCh"),m.createResource(values[0],XSD.xstring));
+		m.add(city,m.createProperty(uri+"hasCityNameEn"),m.createResource(cityInfo[1],XSD.xstring));
 		
-		Resource dateTimeInterval = m.createResource(uri + "#DateTimeIntervel_" + dataTimeFormat(values[12]));
-		m.add(measurements,m.createProperty(uri+"#hasTime"),dateTimeInterval);
-		m.add(dateTimeInterval,m.createProperty(time_uri + "#xsdDateTime"),m.createResource(values[12],XSD.dateTime));
+		Resource dateTimeInterval = m.createResource(uri + "DateTimeIntervel_" + dataTimeFormat(values[12]));
+		m.add(measurements,m.createProperty(uri+"hasTime"),dateTimeInterval);
+		m.add(dateTimeInterval,m.createProperty(time_uri + "xsdDateTime"),m.createResource(values[12],XSD.dateTime));
 		
-		Resource dateTimeDescription = m.createResource(uri + "#DateTimeDescription_" + dataTimeFormat(values[12]));
-		m.add(dateTimeInterval,m.createProperty(time_uri + "#hasDateTimeDescription"),dateTimeDescription);
+		Resource dateTimeDescription = m.createResource(uri + "DateTimeDescription_" + dataTimeFormat(values[12]));
+		m.add(dateTimeInterval,m.createProperty(time_uri + "hasDateTimeDescription"),dateTimeDescription);
 		
-		Resource unitHour = m.createResource(uri + "#unitHour");
-		m.add(dateTimeDescription,m.createProperty(time_uri + "#unitType"),unitHour);
-		m.add(dateTimeDescription,m.createProperty(time_uri + "#year"),m.createResource(values[12].split(" ")[0].split("-")[0],XSD.gYear));
-		m.add(dateTimeDescription,m.createProperty(time_uri + "#month"),m.createResource(values[12].split(" ")[0].split("-")[1],XSD.gMonth));
-		m.add(dateTimeDescription,m.createProperty(time_uri + "#day"),m.createResource(values[12].split(" ")[0].split("-")[2],XSD.gDay));
-		m.add(dateTimeDescription,m.createProperty(time_uri + "#hour"),m.createResource(values[12].split(" ")[1].split("-")[0],XSD.nonNegativeInteger));
-		Resource timeZone = m.createResource(timezone_uri+"#Beijing");
+		Resource unitHour = m.createResource(uri + "unitHour");
+		m.add(dateTimeDescription,m.createProperty(time_uri + "unitType"),unitHour);
+		m.add(dateTimeDescription,m.createProperty(time_uri + "year"),m.createResource(values[12].split(" ")[0].split("-")[0],XSD.gYear));
+		m.add(dateTimeDescription,m.createProperty(time_uri + "month"),m.createResource(values[12].split(" ")[0].split("-")[1],XSD.gMonth));
+		m.add(dateTimeDescription,m.createProperty(time_uri + "day"),m.createResource(values[12].split(" ")[0].split("-")[2],XSD.gDay));
+		m.add(dateTimeDescription,m.createProperty(time_uri + "hour"),m.createResource(values[12].split(" ")[1].split(":")[0],XSD.nonNegativeInteger));
+		Resource timeZone = m.createResource(timezone_uri+"Beijing");
 		
-		m.add(dateTimeDescription,m.createProperty(time_uri + "#timeZone"),timeZone);
-		m.add(timeZone,m.createProperty(timezone_uri+"#GMToffset"),m.createResource("8",XSD.duration));
+		m.add(dateTimeDescription,m.createProperty(time_uri + "timeZone"),timeZone);
+		m.add(timeZone,m.createProperty(timezone_uri+"GMToffset"),m.createResource("8",XSD.duration));
 		return m;
 	}
 	
