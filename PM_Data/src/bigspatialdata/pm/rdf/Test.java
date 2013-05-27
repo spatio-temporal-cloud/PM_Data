@@ -1,4 +1,4 @@
-package rdf.pm.spatial.bigdata;
+package bigspatialdata.pm.rdf;
 
 import java.io.File;
 import java.io.FileNotFoundException;
