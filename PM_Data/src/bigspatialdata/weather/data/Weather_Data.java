@@ -25,13 +25,22 @@ public class Weather_Data extends TimerTask {
 		System.out.println("Update data at " + new Date());
 		try {
 			for(int i=0;i<cities.size();i++){
-				String url = "http://api.openweathermap.org/data/2.5/weather?q="+cities.get(i)+"&mode=json";
+				String url = "";
+				if(cities.get(i).equals("huhehaote")){
+					url = "http://api.openweathermap.org/data/2.5/weather?q=0471&mode=json";
+				}else{
+					url = "http://api.openweathermap.org/data/2.5/weather?q="+cities.get(i)+"&mode=json";
+				}
 				String result = Data.callAPI(url);
+				
 				JSONObject obj = new JSONObject(result);
-				String update_time = dateTimeString(obj.getLong("dt"));
+				String update_time="0000-00-00 00:00:00";
+				if(obj.has("dt")){
+					update_time = dateTimeString(obj.getLong("dt"));
+				}
 				if(!weather_exist(cities.get(i),update_time)){
-					String sun_rise="";
-					String sun_set="";
+					String sun_rise="0000-00-00 00:00:00";
+					String sun_set="0000-00-00 00:00:00";
 					if(obj.has("sys")){
 						JSONObject sys = obj.getJSONObject("sys");
 						if(sys.has("sunrise")){
