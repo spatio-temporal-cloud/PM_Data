@@ -34,11 +34,13 @@ public class History_BJMEMC {
 		try {
 			postData += "&ddlType=" + URLEncoder.encode("城市环境评价点", "GBK");
 			postData += "&ddlName=" + URLEncoder.encode("东城东四", "GBK");
+			postData += "&txtTime=" + "2013-06-12";
+			postData += "&btnSearch=" + URLEncoder.encode("搜索","GBK");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		postData += "&txtTime=" + "2013-06-12";
+		
 
 		result = paraseHtml(execute(postData));
 		System.out.println("AQI: " + result.get("AQI"));
@@ -46,8 +48,9 @@ public class History_BJMEMC {
 
 	public static Map<String, String> paraseHtml(String s) {
 		Map<String, String> result = new HashMap<String, String>();
-
+		System.out.println("html: " + s);
 		Document doc = Jsoup.parse(s);
+		
 		Element __EVENTTARGET = doc.getElementById("__EVENTTARGET");
 		result.put("__EVENTTARGET", __EVENTTARGET.attr("value"));
 		Element __EVENTARGUMENT = doc.getElementById("__EVENTARGUMENT");
@@ -90,7 +93,15 @@ public class History_BJMEMC {
 			httpConn.setRequestProperty(
 					"User-Agent",
 					"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727)");
-
+			httpConn.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+//			httpConn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+			httpConn.setRequestProperty("Accept-Language", "zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3");
+			httpConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			httpConn.setRequestProperty("Connection", "Keep-Alive");
+			httpConn.setRequestProperty("Cookie", "ASP.NET_SessionId=x5calfjvpx5absb4x4p0ndyp");
+			httpConn.setRequestProperty("Host", "jc.bjmemc.com.cn");
+			httpConn.setRequestProperty("Cache-Control", "no-cache");
+			httpConn.setRequestProperty("Referer", "http://jc.bjmemc.com.cn/AirQualityDaily/DataSearch.aspx");
 			httpConn.setRequestMethod("POST");
 			httpConn.connect();
 
