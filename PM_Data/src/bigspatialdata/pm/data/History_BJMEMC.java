@@ -6,7 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -20,37 +22,47 @@ import org.jsoup.Jsoup;
 public class History_BJMEMC {
 
 	public static void main(String args[]) {
-		crawl();
+		System.out.println("Begin to Crawl...");
+		Map<String, String> result = crawl("城市环境评价点","东城东四","2013-06-18");
+		System.out.println(result.get("AQI"));
+		System.out.println("================== crawl over. ");
+		
 	}
 
-	public static void crawl() {
-		String htmlContent = execute("");
-		Map<String, String> result = paraseHtml(htmlContent);
-		String postData = "__EVENTTARGET=" + result.get("__EVENTTARGET");
-		postData += "&__EVENTARGUMENT=" + result.get("__EVENTARGUMENT");
-		postData +=	"&__LASTFOCUS=" + result.get("__LASTFOCUS");
-		postData += "&__VIEWSTATE=" + result.get("__VIEWSTATE");
-		postData += "&__EVENTVALIDATION=" + result.get("__EVENTVALIDATION");
+	public static Map<String, String> crawl(String ddlType,String ddlName,String txtTime) {
+		Map<String, String> result = null;
 		try {
-			postData += "&ddlType=" + URLEncoder.encode("城市环境评价点", "GBK");
-			postData += "&ddlName=" + URLEncoder.encode("东城东四", "GBK");
-			postData += "&txtTime=" + "2013-06-12";
+			String htmlContent = execute("");
+			result = paraseHtml(htmlContent);
+			String postData = "__EVENTTARGET=" + java.net.URLEncoder.encode(result.get("__EVENTTARGET"),"GBK");
+			postData += "&__EVENTARGUMENT=" + java.net.URLEncoder.encode(result.get("__EVENTARGUMENT"),"GBK");
+			postData +=	"&__LASTFOCUS=" + java.net.URLEncoder.encode(result.get("__LASTFOCUS"),"GBK");
+			postData += "&__VIEWSTATE=" + java.net.URLEncoder.encode(result.get("__VIEWSTATE"),"GBK");
+			postData += "&__EVENTVALIDATION=" + java.net.URLEncoder.encode(result.get("__EVENTVALIDATION"),"GBK");
+		
+			postData += "&ddlType=" + URLEncoder.encode(ddlType, "GBK");
+			postData += "&ddlName=" + URLEncoder.encode(ddlName, "GBK");
+			postData += "&txtTime=" + txtTime;
 			postData += "&btnSearch=" + URLEncoder.encode("搜索","GBK");
-		} catch (Exception e) {
+			
+			result = paraseHtml(execute(postData));
+			
+		} catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Connect timed out");
+			System.exit(0);
+		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-
-		result = paraseHtml(execute(postData));
-		System.out.println("AQI: " + result.get("AQI"));
+		return result;
 	}
 
 	public static Map<String, String> paraseHtml(String s) {
 		Map<String, String> result = new HashMap<String, String>();
-		System.out.println("html: " + s);
+
 		Document doc = Jsoup.parse(s);
-		
 		Element __EVENTTARGET = doc.getElementById("__EVENTTARGET");
 		result.put("__EVENTTARGET", __EVENTTARGET.attr("value"));
 		Element __EVENTARGUMENT = doc.getElementById("__EVENTARGUMENT");
@@ -68,13 +80,13 @@ public class History_BJMEMC {
 		result.put("Primary", tds.get(1).val());
 		Element marqueebox1 = doc.getElementById("marqueebox1");
 		Elements tds2 = marqueebox1.select("td");
-		result.put("AQI", tds2.get(0).val());
-		result.put("Level", tds2.get(1).val());
-		result.put("Description", tds2.get(2).val());
+		result.put("AQI", tds2.get(0).html());
+		result.put("Level", tds2.get(1).html());
+		result.put("Description", tds2.get(2).html());
 		return result;
 	}
 
-	public static String execute(String postData) {
+	public static String execute(String postData) throws SocketTimeoutException {
 		final String encode = "gbk";
 		final String website = "http://jc.bjmemc.com.cn";
 		final int connectTimeOut = 15000;
@@ -91,27 +103,26 @@ public class History_BJMEMC {
 			httpConn.setConnectTimeout(connectTimeOut);
 			httpConn.setReadTimeout(readDataTimeOut);
 			httpConn.setRequestProperty(
-					"User-Agent",
-					"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727)");
-			httpConn.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-//			httpConn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-			httpConn.setRequestProperty("Accept-Language", "zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3");
-			httpConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			httpConn.setRequestProperty("Connection", "Keep-Alive");
-			httpConn.setRequestProperty("Cookie", "ASP.NET_SessionId=x5calfjvpx5absb4x4p0ndyp");
-			httpConn.setRequestProperty("Host", "jc.bjmemc.com.cn");
-			httpConn.setRequestProperty("Cache-Control", "no-cache");
-			httpConn.setRequestProperty("Referer", "http://jc.bjmemc.com.cn/AirQualityDaily/DataSearch.aspx");
+					"Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"); 
+			httpConn.setRequestProperty(
+					"Connection", "keep-alive");
+			httpConn.setRequestProperty(
+					"Cookie","ASP.NET_SessionId=muw03145ed0phmudoczeqg45");
+			httpConn.setRequestProperty(
+					"Host","jc.bjmemc.com.cn");
+			httpConn.setRequestProperty(
+					"Referer", "http://jc.bjmemc.com.cn/AirQualityDaily/DataSearch.aspx");//ÓÐÐ©ŒÓÈëÁËÀŽÂ·ÅÐ¶Ï£¬ÄÇÕâžöŸÍÊÇ±ØÐèÒªŒÓµÄÁË
+			httpConn.setRequestProperty(
+			        "User-Agent", "Mozilla/5.0 (Windows NT 6.1; rv:21.0) Gecko/20100101 Firefox/21.0");
+
 			httpConn.setRequestMethod("POST");
 			httpConn.connect();
 
-			OutputStream outStream = httpConn.getOutputStream();
-
+			OutputStream outStream = httpConn.getOutputStream();			
 			outStream.write(postData.getBytes());
 			outStream.flush();
 			outStream.close();
-			System.out.println("Request url: " + (website + reqUrl));
-			System.out.println("Post data: " + postData);
+			
 			System.out.println("Response code: " + httpConn.getResponseCode());
 			if (HttpURLConnection.HTTP_OK == httpConn.getResponseCode()) {
 				InputStream inStream = httpConn.getInputStream();
@@ -125,11 +136,11 @@ public class History_BJMEMC {
 				}
 				htmlContent = content.toString();
 			}
-			System.out.println("================== crawl over. ");
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
+		}finally {
 			if (null != httpConn) {
 				try {
 					httpConn.disconnect();
