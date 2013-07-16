@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.json.JSONArray;
@@ -29,21 +30,45 @@ public class Station {
 		 for(int i=0;i<arr.length();i++){
 				JSONObject city = arr.getJSONObject(i);
 				String cityNameCh = city.getString("city");
-				System.out.println(cityNameCh+"......");
+	//			System.out.println(cityNameCh+"......");
 				String stations = city.getString("stations");
 				JSONArray stas = new JSONArray(stations);
 				for(int j=0;j<stas.length();j++){
 					JSONObject station = stas.getJSONObject(j);
 					String stationNameCh = station.getString("station_name");
 					String stationCode = station.getString("station_code");
-					System.out.println(stationNameCh);
+	//				System.out.println(stationNameCh);
 					String sql = "insert into Station(stationCode, stationNameCh, cityNameCh) values('"+ 
 						stationCode +"','"+stationNameCh+"','"+cityNameCh+"')";
-					stmt.executeUpdate(sql);
+	//				
+					if(!checkStation(stationNameCh)){
+						System.out.println(stationCode + " " +  stationNameCh + " " + cityNameCh);
+	//					stmt.executeUpdate(sql);
+					}
 				}
-				
 		}
 		 stmt.close();
 		 conn.close();
+	}
+	public static boolean checkStation(String station){
+		Boolean tag=true;
+		try {
+			java.sql.Connection conn = DriverManager.getConnection(
+			    		"jdbc:mysql://10.214.0.147/pm0?useUnicode=true&characterEncoding=UTF-8", "pm", "ccntgrid");
+			java.sql.Statement stmt = conn.createStatement();
+			ResultSet result = stmt.executeQuery("select * from Station where stationNameCh = '" + station + "';");
+			if(result.next()){
+				tag = true;
+			}else{
+				tag = false;
+			}
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Unable to read data from mysql.");
+		}
+		return tag;
 	}
 }

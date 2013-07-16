@@ -18,23 +18,27 @@ public class Data2 extends TimerTask {
 		// TODO Auto-generated method stub
 		System.out.println("Update data at " + new Date());
 		System.out.println("Call api for station data...");
-		String url = "http://www.pm25.in/api/querys/all_cities.json?token=4pUYzxZdXBZBz7deR78x";
+	//	String url = "http://www.pm25.in/api/querys/all_cities.json?token=4pUYzxZdXBZBz7deR78x";
+		String url = "http://www.pm25.in/api/querys/all_cities.json?token=JwNAjQg533aCJxLQn5V8";
 		String result = Data.callAPI(url);
 		try {
 			JSONArray arr = new JSONArray(result);
 			ArrayList<String> sqls = new ArrayList<String>();
 			JSONObject obj = arr.getJSONObject(0);
 			String time_point = obj.getString("time_point").split("T")[0] + " "+obj.getString("time_point").split("T")[1].split("Z")[0];
+			System.out.println("in run: " + time_point);
 			if(!checkExist(time_point)){
 				for(int i=0;i<arr.length();i++){
-					obj = arr.getJSONObject(i);
-					time_point = obj.getString("time_point").split("T")[0] + " "+obj.getString("time_point").split("T")[1].split("Z")[0];
-					String sql = "insert into Station_Data(StationNameCh,StationCode,cityNameCh,AQI,Quality,CO,SO2,NO2,O3,PM10,PM2p5,primary_pollutant,time_point) " +
-							"values('"+obj.getString("position_name")+"','"+obj.getString("station_code") +"','"+obj.getString("area")+"',"+
+					obj = arr.getJSONObject(i);					
+					if(!obj.getString("area").equals("大庆") ){
+						time_point = obj.getString("time_point").split("T")[0] + " "+obj.getString("time_point").split("T")[1].split("Z")[0];
+						String sql = "insert into Station_Data(StationNameCh,StationCode,cityNameCh,AQI,Quality,CO,SO2,NO2,O3,PM10,PM2p5,primary_pollutant,time_point) " +
+							"values('"+obj.getString("position_name")+"','"+obj.getString("station_code")+"','"+obj.getString("area")+"',"+
 							obj.getInt("aqi")+",'"+obj.getString("quality")+"',"+obj.getDouble("co")+","+
 							obj.getInt("so2")+","+obj.getInt("no2") + ","+obj.getInt("o3") +","+obj.getInt("pm10")+","+obj.getInt("pm2_5")+
 							",'"+obj.getString("primary_pollutant")+"','"+time_point+"')";
-					sqls.add(sql);
+						sqls.add(sql);
+					}
 				}
 				Data.addData(sqls);
 				System.out.println("Calculate city data...");
@@ -52,6 +56,7 @@ public class Data2 extends TimerTask {
 	}
 	
 	public static void calCityData(String time_point){
+		System.out.println("in calCityData: " + time_point);
 		ArrayList<String> cities = Data.getCities();
 		ArrayList<String> sqls = new ArrayList<String>();
 		for(int i=0;i<cities.size();i++){
