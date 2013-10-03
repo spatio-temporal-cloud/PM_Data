@@ -13,32 +13,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import bigspatialdata.air.pm25in.Data;
 
 
-public class Weather_Data extends TimerTask {
+public class WeatherRun extends TimerTask {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		ArrayList<String> cities = getCitiesEn();
+		WeatherData data = new WeatherData(WeatherSchedule.conf);
+		ArrayList<String> cities = data.getCitiesEn();
 		ArrayList<String> sqls = new ArrayList<String>();
 		System.out.println("Update data at " + new Date());
 		try {
 			for(int i=0;i<cities.size();i++){
-				String url = "";
-				if(cities.get(i).equals("huhehaote")){
-					url = "http://api.openweathermap.org/data/2.5/weather?q=0471&mode=json";
-				}else{
-					url = "http://api.openweathermap.org/data/2.5/weather?q="+cities.get(i)+"&mode=json";
-				}
-				String result = Data.callAPI(url);
-				
+				String result = data.getDataForCity(cities.get(i));
 				JSONObject obj = new JSONObject(result);
 				String update_time="0000-00-00 00:00:00";
 				if(obj.has("dt")){
 					update_time = dateTimeString(obj.getLong("dt"));
 				}
-				if(!weather_exist(cities.get(i),update_time)){
+				if(data.checkWeatherExist(cities.get(i),update_time)){
 					String sun_rise="0000-00-00 00:00:00";
 					String sun_set="0000-00-00 00:00:00";
 					if(obj.has("sys")){
@@ -123,8 +116,7 @@ public class Weather_Data extends TimerTask {
 				}
 			}
 			if(sqls.size()>0){
-				Data.addData(sqls);
-				
+				data.addDataToDB(sqls);
 			}
 			System.out.println("Finished");
 		} catch (JSONException e) {
@@ -133,27 +125,7 @@ public class Weather_Data extends TimerTask {
 		}
 	}
 	
-	public static boolean weather_exist(String cityNameEn,String time){
-		boolean tag=true;
-		try {
-			java.sql.Connection conn = DriverManager.getConnection(
-			    		"jdbc:mysql://10.214.0.147/pm0?useUnicode=true&characterEncoding=UTF-8", "pm", "ccntgrid");
-			java.sql.Statement stmt = conn.createStatement();
-			ResultSet result = stmt.executeQuery("select * from Weather_Data where lastupdate='"+time+"' and cityNameEn='"+cityNameEn+"';");
-			if(result.next()){
-				tag=true;
-			}else{
-				tag=false;
-			}
-			stmt.close();
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Unable to read city list. Failed to connect to mysql!");
-		}
-		return tag;
-	}
+	
 	public static String dateTimeString(long t){
 		SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
@@ -162,25 +134,5 @@ public class Weather_Data extends TimerTask {
         return sdf.format(cal.getTime());
 	}
 	
-	public static ArrayList<String> getCitiesEn(){
-		ArrayList<String> cities = new ArrayList<String>();
-		try {
-			java.sql.Connection conn = DriverManager.getConnection(
-			    		"jdbc:mysql://10.214.0.147/pm0?useUnicode=true&characterEncoding=UTF-8", "pm", "ccntgrid");
-			java.sql.Statement stmt = conn.createStatement();
-			ResultSet result = stmt.executeQuery("select cityNameEn from City;");
-			while(result.next()){
-				String city = result.getString("cityNameEn");
-				cities.add(city);
-			}
-			stmt.close();
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Unable to read city list. Failed to connect to mysql!");
-		}
-		 
-		return cities;
-	}
+	
 }

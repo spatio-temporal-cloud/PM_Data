@@ -22,7 +22,7 @@ public class Station {
 			 System.exit(0);
 		 }
 		 Properties conf = ConfProperties.getProperties(args[0]);
-		 
+		
 		 URL cityList = new URL(conf.getProperty("station.URL"));  
 		 BufferedReader in = new BufferedReader(new InputStreamReader(cityList.openStream()));  
 		 String result = "";
