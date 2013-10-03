@@ -8,14 +8,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class Run extends TimerTask {
+public class PM25InSchedule extends TimerTask {
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		System.out.println("Update data at " + new Date());
 		System.out.println("Call api for station data...");
-		PM25InData data = new PM25InData(Schedule.conf);
+		PM25InData data = new PM25InData(PM25InRun.conf);
 		String result = data.getDataOfAllCities();
 		try {
 			JSONArray arr = new JSONArray(result);

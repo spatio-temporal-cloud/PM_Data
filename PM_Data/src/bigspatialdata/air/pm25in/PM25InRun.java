@@ -3,7 +3,7 @@ import java.util.Properties;
 import java.util.Timer;
 
 
-public class Schedule {
+public class PM25InRun {
 	public static Properties conf;
 	public static void main(String args[]){
 		if(args.length!=1){
@@ -17,6 +17,6 @@ public class Schedule {
 			System.exit(0);
 		}
 		Timer time = new Timer();
-		time.schedule(new Run(), 0,intervel);
+		time.schedule(new PM25InSchedule(), 0,intervel);
 	}
 }
