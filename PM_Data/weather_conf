@@ -1,0 +1,5 @@
+interval.min=30
+db.name=jdbc:mysql://10.214.0.147/pm0?useUnicode=true&characterEncoding=UTF-8
+db.user=pm
+db.password=ccntgrid
+URL=http://api.openweathermap.org/data/2.5/weather

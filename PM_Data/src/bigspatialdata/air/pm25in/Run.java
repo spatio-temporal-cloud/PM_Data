@@ -1,10 +1,6 @@
 package bigspatialdata.air.pm25in;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Properties;
 import java.util.TimerTask;
 
 import org.json.JSONArray;
