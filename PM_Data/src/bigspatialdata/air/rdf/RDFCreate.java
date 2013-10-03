@@ -1,4 +1,4 @@
-package bigspatialdata.pm.rdf;
+package bigspatialdata.air.rdf;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
