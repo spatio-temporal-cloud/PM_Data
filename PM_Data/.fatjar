@@ -1,12 +1,12 @@
 #Fat Jar Configuration File
-#Tue May 28 13:31:57 CST 2013
+#Thu Oct 03 20:06:25 CST 2013
 onejar.license.required=true
 manifest.classpath=
 manifest.removesigners=true
 onejar.checkbox=false
-jarname=Weather_Data_fat.jar
+jarname=Weather_fat.jar
 manifest.mergeall=true
-manifest.mainclass=bigspatialdata.weather.data.Weather_Schedule
+manifest.mainclass=bigspatialdata.weather.openweathermap.WeatherRun
 manifest.file=<createnew>
 jarname.isextern=false
 onejar.expand=

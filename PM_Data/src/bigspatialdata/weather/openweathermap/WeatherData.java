@@ -9,9 +9,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
-import bigspatialdata.air.pm25in.PM25InData;
 
 public class WeatherData {
 	private Properties conf;
@@ -29,12 +30,7 @@ public class WeatherData {
 	}
 	
 	public String getDataForCity(String city){
-		String url = "";
-		if(city.equals("huhehaote")){
-			url = conf.getProperty("URL")+"?q=0471&mode=json";
-		}else{
-			url = conf.getProperty("URL")+"?q="+city+"&mode=json";
-		}
+		String url = conf.getProperty("URL")+"?q="+city+"&mode=json";
 		String result = "";
 		String line = "";
 		URL cityList;
@@ -56,22 +52,21 @@ public class WeatherData {
 		return result;
 	}
 	
-	public void addDataToDB(ArrayList<String> sqls) {
+	public boolean addDataToDB(String sql) {
 		try {
 			java.sql.Connection conn = DriverManager.getConnection(
 					conf.getProperty("db.name"), conf.getProperty("db.user"),
 					conf.getProperty("db.password"));
 			java.sql.Statement stmt = conn.createStatement();
-			for (int i = 0; i < sqls.size(); i++) {
-				stmt.executeUpdate(sqls.get(i));
-			}
+				stmt.executeUpdate(sql);
 			stmt.close();
 			conn.close();
-			System.out.println(sqls.size() + " new records added");
+			return true;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Unable to add data to mysql.");
+			return false;
 		}
 	}
 	
@@ -108,6 +103,30 @@ public class WeatherData {
 			while(result.next()){
 				String city = result.getString("cityNameEn");
 				cities.add(city);
+			}
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Unable to read city list. Failed to connect to mysql!");
+		}
+		 
+		return cities;
+	}
+	
+	public Map<String,String> getCities(){
+		Map<String, String> cities = new HashMap<String, String>();
+		try {
+			java.sql.Connection conn = DriverManager.getConnection(
+					conf.getProperty("db.name"), conf.getProperty("db.user"),
+					conf.getProperty("db.password"));
+			java.sql.Statement stmt = conn.createStatement();
+			ResultSet result = stmt.executeQuery("select cityNameCh,cityNameEn from City;");
+			while(result.next()){
+				String city = result.getString("cityNameCh");
+				String cityEn = result.getString("cityNameEn");
+				cities.put(city, cityEn);
 			}
 			stmt.close();
 			conn.close();

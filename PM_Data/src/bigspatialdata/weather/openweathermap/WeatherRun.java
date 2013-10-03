@@ -32,8 +32,8 @@ public class WeatherRun {
 		
 		
 		long intervel = Integer.parseInt(conf.getProperty("interval.min")) * 60 * 1000;
-		if(intervel<1800000){
-			System.out.println("intervel is less than 30 minutes");
+		if(intervel<600000){
+			System.out.println("intervel is less than 20 minutes");
 			System.exit(0);
 		}
 		Timer time = new Timer();

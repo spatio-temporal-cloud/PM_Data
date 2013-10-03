@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 public class PM25InData {
 
@@ -98,11 +97,8 @@ public class PM25InData {
 		return cities;
 	}
 
-	public boolean checkCityData(JSONObject obj) throws JSONException {
+	public boolean checkCityData(String cityNameCh, String time_point) {
 		boolean tag = false;
-		String cityNameCh = obj.getString("area");
-		String time_point = obj.getString("time_point").split("T")[0] + " "
-				+ obj.getString("time_point").split("T")[1].split("Z")[0];
 		String sql = "select cityNameCh from City_Data where cityNameCh='"
 				+ cityNameCh + "' and time_point='" + time_point + "'";
 		try {
@@ -151,12 +147,39 @@ public class PM25InData {
 		return tag;
 	}
 
+	public boolean checkStationDataExist(String time_point, String stationCode) {
+		boolean tag = true;
+		String sql = "select * from Station_Data where time_point='" + time_point
+				+ "' and stationCode='"+stationCode+"'";
+		try {
+			java.sql.Connection conn = DriverManager.getConnection(
+					conf.getProperty("db.name"), conf.getProperty("db.user"),
+					conf.getProperty("db.password"));
+			java.sql.Statement stmt = conn.createStatement();
+			ResultSet result = stmt.executeQuery(sql);
+			if (result.next()) {
+				tag = true;
+			} else {
+				tag = false;
+			}
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Unable to read data from mysql.");
+		}
+		return tag;
+	}
+	
 	public void calCityData(String time_point) {
-		System.out.println("in calCityData: " + time_point);
 		ArrayList<String> cities = getCities();
 		ArrayList<String> sqls = new ArrayList<String>();
 		for (int i = 0; i < cities.size(); i++) {
 			String cityNameCh = cities.get(i);
+			if(checkCityData(cityNameCh, time_point)){
+				continue;
+			}
 			String sql = "select * from Station_Data where time_point='"
 					+ time_point + "' and cityNameCh='" + cityNameCh + "'";
 			int NO2 = 0, SO2 = 0, AQI = 0, PM10 = 0, PM2p5 = 0, O3 = 0;
