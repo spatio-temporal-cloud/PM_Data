@@ -1,4 +1,4 @@
-package bigspatialdata.weather.data;
+package bigspatialdata.weather.openweathermap;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -13,7 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import bigspatialdata.pm.data.Data;
+import bigspatialdata.air.pm25in.Data;
 
 
 public class Weather_Data extends TimerTask {

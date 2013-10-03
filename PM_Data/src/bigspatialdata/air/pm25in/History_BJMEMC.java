@@ -1,4 +1,4 @@
-package bigspatialdata.pm.data;
+package bigspatialdata.air.pm25in;
 
 import java.io.BufferedReader;
 import java.io.IOException;

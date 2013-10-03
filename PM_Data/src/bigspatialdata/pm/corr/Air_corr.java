@@ -62,25 +62,7 @@ public class Air_corr {
 		factors.add("O3");
 		factors.add("PM10");
 		ArrayList<String> days = new ArrayList<String>();
-//		days.add("2013-05-25");
-//		days.add("2013-05-27");
-//		days.add("2013-05-29");
-//		days.add("2013-05-31");
-//		days.add("2013-06-02");
-//		days.add("2013-06-04");
-//		days.add("2013-06-06");
-//		days.add("2013-06-08");
-//		days.add("2013-06-10");
-//		days.add("2013-06-12");
-//		days.add("2013-06-14");
-//		days.add("2013-06-16");
-//		days.add("2013-06-18");
-//		days.add("2013-06-20");
-//		days.add("2013-06-22");
-//		days.add("2013-06-24");
-//		days.add("2013-06-26");
-//		days.add("2013-06-28");
-//		days.add("2013-06-30");
+
 
 		days.add("2013-07-19");
 		days.add("2013-07-20");

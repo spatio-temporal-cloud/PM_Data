@@ -1,4 +1,4 @@
-package bigspatialdata.pm.data;
+package bigspatialdata.air.pm25in;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,15 +30,13 @@ public class Data2 extends TimerTask {
 			if(!checkExist(time_point)){
 				for(int i=0;i<arr.length();i++){
 					obj = arr.getJSONObject(i);					
-					if(!obj.getString("area").equals("大庆") ){
-						time_point = obj.getString("time_point").split("T")[0] + " "+obj.getString("time_point").split("T")[1].split("Z")[0];
-						String sql = "insert into Station_Data(StationNameCh,StationCode,cityNameCh,AQI,Quality,CO,SO2,NO2,O3,PM10,PM2p5,primary_pollutant,time_point) " +
-							"values('"+obj.getString("position_name")+"','"+obj.getString("station_code")+"','"+obj.getString("area")+"',"+
-							obj.getInt("aqi")+",'"+obj.getString("quality")+"',"+obj.getDouble("co")+","+
-							obj.getInt("so2")+","+obj.getInt("no2") + ","+obj.getInt("o3") +","+obj.getInt("pm10")+","+obj.getInt("pm2_5")+
-							",'"+obj.getString("primary_pollutant")+"','"+time_point+"')";
-						sqls.add(sql);
-					}
+					time_point = obj.getString("time_point").split("T")[0] + " "+obj.getString("time_point").split("T")[1].split("Z")[0];
+					String sql = "insert into Station_Data(StationNameCh,StationCode,cityNameCh,AQI,Quality,CO,SO2,NO2,O3,PM10,PM2p5,primary_pollutant,time_point) " +
+						"values('"+obj.getString("position_name")+"','"+obj.getString("station_code")+"','"+obj.getString("area")+"',"+
+						obj.getInt("aqi")+",'"+obj.getString("quality")+"',"+obj.getDouble("co")+","+
+						obj.getInt("so2")+","+obj.getInt("no2") + ","+obj.getInt("o3") +","+obj.getInt("pm10")+","+obj.getInt("pm2_5")+
+						",'"+obj.getString("primary_pollutant")+"','"+time_point+"')";
+					sqls.add(sql);					
 				}
 				Data.addData(sqls);
 				System.out.println("Calculate city data...");

@@ -1,8 +1,8 @@
-package bigspatialdata.weather.data;
+package bigspatialdata.weather.openweathermap;
 
 import java.util.Timer;
 
-import bigspatialdata.pm.data.Data2;
+import bigspatialdata.air.pm25in.Data2;
 
 public class Weather_Schedule {
 	public static void main(String args[]){

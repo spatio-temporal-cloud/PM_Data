@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import bigspatialdata.pm.data.Data;
+import bigspatialdata.air.pm25in.Data;
 
 public class City_Code {
+	
 	public static void city_code() throws JSONException{
 		ArrayList<String> cities = Data.getCities();
 		ArrayList<String> sqls = new ArrayList<String>();
