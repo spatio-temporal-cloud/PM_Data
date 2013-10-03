@@ -11,7 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class Data2 extends TimerTask {
+public class GetAndStore extends TimerTask {
 
 	@Override
 	public void run() {

@@ -2,7 +2,7 @@ package bigspatialdata.weather.openweathermap;
 
 import java.util.Timer;
 
-import bigspatialdata.air.pm25in.Data2;
+import bigspatialdata.air.pm25in.GetAndStore;
 
 public class Weather_Schedule {
 	public static void main(String args[]){
