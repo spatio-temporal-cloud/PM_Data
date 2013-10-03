@@ -124,7 +124,7 @@ public class Weather_Data extends TimerTask {
 			}
 			if(sqls.size()>0){
 				Data.addData(sqls);
-				System.out.println(sqls.size() + " new records added");
+				
 			}
 			System.out.println("Finished");
 		} catch (JSONException e) {

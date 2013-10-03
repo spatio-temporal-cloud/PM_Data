@@ -18,8 +18,8 @@ public class Data2 extends TimerTask {
 		// TODO Auto-generated method stub
 		System.out.println("Update data at " + new Date());
 		System.out.println("Call api for station data...");
-	//	String url = "http://www.pm25.in/api/querys/all_cities.json?token=4pUYzxZdXBZBz7deR78x";
-		String url = "http://www.pm25.in/api/querys/all_cities.json?token=JwNAjQg533aCJxLQn5V8";
+		String url = "http://www.pm25.in/api/querys/all_cities.json?token=4pUYzxZdXBZBz7deR78x";
+	//	String url = "http://www.pm25.in/api/querys/all_cities.json?token=JwNAjQg533aCJxLQn5V8";
 		String result = Data.callAPI(url);
 		try {
 			JSONArray arr = new JSONArray(result);

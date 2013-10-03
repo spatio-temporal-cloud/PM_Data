@@ -75,6 +75,7 @@ public class Data extends TimerTask {
 			}
 			stmt.close();
 			conn.close();
+			System.out.println(sqls.size() + " new records added");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
