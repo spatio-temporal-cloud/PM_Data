@@ -1,0 +1,5 @@
+city.URL=http://pm25.in/api/querys.json?token=5j1znBVAsnSf5xQyNQyq
+station.URL=http://pm25.in/api/querys/station_names.json?token=5j1znBVAsnSf5xQyNQyq
+db.name=jdbc:mysql://10.214.0.147/pm0?useUnicode=true&characterEncoding=UTF-8
+db.user=pm
+db.password=ccntgrid
