@@ -1,8 +1,0 @@
-city.URL=http://pm25.in/api/querys.json?token=5j1znBVAsnSf5xQyNQyq
-station.URL=http://pm25.in/api/querys/station_names.json?token=5j1znBVAsnSf5xQyNQyq
-all_cities.URL=http://www.pm25.in/api/querys/all_cities.json?token=4pUYzxZdXBZBz7deR78x
-# all_cities.URL=http://www.pm25.in/api/querys/all_cities.json?token=JwNAjQg533aCJxLQn5V8
-interval.min=20
-db.name=jdbc:mysql://10.214.0.147/pm0?useUnicode=true&characterEncoding=UTF-8
-db.user=pm
-db.password=ccntgrid
